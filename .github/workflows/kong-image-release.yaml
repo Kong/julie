@@ -73,5 +73,5 @@ jobs:
         with:
           context: release/docker
           file: release/docker/Dockerfile
-          push: false
+          push: true
           tags: ${{ env.ECR_PROD_REGISTRY }}:${{ needs.release-details.outputs.release_date }}
