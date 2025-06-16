@@ -88,6 +88,14 @@ public class TopicConfigUpdatePlan {
     topicConfigs.forEach(
         (configKey, configValue) -> {
           ConfigEntry currentConfigEntry = currentKafkaConfigs.get(configKey);
+          if (currentConfigEntry == null) {
+            LOGGER.debug(
+                String.format(
+                    "addNewOrUpdatedConfigs detected new config: %s with value %s",
+                    configKey, configValue));
+            addNewConfig(configKey, configValue);
+            return;
+          }
           LOGGER.debug(
               String.format(
                   "addNewOrUpdatedConfigs compare: currentConfigEntryValue = %s and configValue = %s",
