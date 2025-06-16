@@ -1,7 +1,6 @@
 name: release a new topology builder docker image
 
 on:
-  pull_request:
   workflow_dispatch:
 
 env:
