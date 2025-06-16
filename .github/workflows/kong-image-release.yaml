@@ -31,10 +31,10 @@ jobs:
         id-token: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 #v4.2.1
 
       - name: Set up the JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #4.7.1
         with:
           java-version: 11
           distribution: temurin
@@ -53,11 +53,23 @@ jobs:
         run: ls -l
         working-directory: release/docker
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 #v3.10.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df #v4.2.1
+        with:
+          role-to-assume: ${{ env.ECR_PROD_ROLE }}
+          aws-region: us-east-2
+          mask-aws-account-id: 'false'
+
       - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #v2.0.1
+        with:
+          registry: ${{ env.ECR_ACCOUNT_ID }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 #v6.18.0
         with:
           context: release/docker
           file: release/docker/Dockerfile
