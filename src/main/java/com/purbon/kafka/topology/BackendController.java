@@ -17,7 +17,8 @@ import org.apache.logging.log4j.Logger;
 
 public class BackendController {
 
-  public static final String STATE_FILE_NAME = ".cluster-state";
+  public static final String STATE_FILE_NAME =
+      System.getProperty("state.dir", "") + ".cluster-state";
 
   public enum Mode {
     TRUNCATE,
