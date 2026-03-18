@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-cp  ../../target/julie-ops.jar .
-cp ../../src/main/scripts/julie-ops-cli.sh .
+set -euo pipefail
 
-docker build --compress -t purbon/kafka-topology-builder .
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-rm julie-ops.jar
-rm julie-ops-cli.sh
+docker build --compress -f "${SCRIPT_DIR}/Dockerfile" -t purbon/kafka-topology-builder "${REPO_ROOT}"
