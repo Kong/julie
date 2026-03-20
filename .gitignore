@@ -15,3 +15,4 @@ private.key
 rpm-gen-key
 .s3/
 .mvn
+.vscode/settings.json

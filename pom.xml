@@ -545,14 +545,14 @@
     <spotbugs-maven-plugin.version>4.8.3.1</spotbugs-maven-plugin.version>
     <!-- dependencies -->
     <assertj.version>3.25.3</assertj.version>
-    <avro.version>1.11.3</avro.version>
+    <avro.version>1.11.4</avro.version>
     <aws.java.sdk.version>2.25.6</aws.java.sdk.version>
     <commons.version>1.6.0</commons.version>
     <confluent-ce.version>7.6.0-ce</confluent-ce.version>
     <confluent.version>7.6.0</confluent.version>
     <gcp.java.sdk.version>26.34.0</gcp.java.sdk.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <jackson.version>2.16.2</jackson.version>
+    <jackson.version>2.19.0</jackson.version>
     <jedis.version>4.4.7</jedis.version>
     <jersey.version>3.1.5</jersey.version>
     <jinjava.version>2.7.6</jinjava.version>

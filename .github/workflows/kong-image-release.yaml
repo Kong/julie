@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=release_date::$(date +'%Y-%m-%d-%H-%M')"
+        run: echo "release_date=$(date +'%Y-%m-%d-%H-%M')" >> $GITHUB_OUTPUT
 
   release-image:
     name: Release Image
@@ -35,22 +35,12 @@ jobs:
       - name: Set up the JDK
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #4.7.1
         with:
-          java-version: 11
+          java-version: 17
           distribution: temurin
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
-      - name: copy fat jar
-        run: cp ./target/julie-ops.jar release/docker
-
-      - name: copy runner file
-        run: cp ./src/main/scripts/julie-ops-cli.sh release/docker
-
-      - name: list files (release dir)
-        run: ls -l
-        working-directory: release/docker
+        run: mvn -B package -DskipTests --file pom.xml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 #v3.10.0
@@ -65,12 +55,14 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #v2.0.1
         with:
-          registry: ${{ env.ECR_ACCOUNT_ID }}
+          registries: ${{ env.ECR_ACCOUNT_ID }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 #v6.18.0
         with:
-          context: release/docker
+          context: .
           file: release/docker/Dockerfile
           push: true
+          build-args: |
+            BASE_IMAGE_PREFIX=910202568813.dkr.ecr.us-east-2.amazonaws.com/dockerhub/library/
           tags: ${{ env.ECR_PROD_REGISTRY }}:${{ needs.release-details.outputs.release_date }}
