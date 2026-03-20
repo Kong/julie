@@ -1,0 +1,25 @@
+---
+context: "docker-test"
+projects:
+  - name: "demo-project"
+    topics:
+      - name: "demo.users.events"
+        config:
+          replication.factor: "1"
+          num.partitions: "3"
+          cleanup.policy: "delete"
+          retention.ms: "604800000"  # 7 days
+      
+      - name: "demo.orders.events"
+        config:
+          replication.factor: "1"
+          num.partitions: "3"
+          cleanup.policy: "delete"
+          retention.ms: "604800000"
+      
+      - name: "demo.analytics.aggregated"
+        config:
+          replication.factor: "1"
+          num.partitions: "1"
+          cleanup.policy: "compact"
+          compression.type: "snappy"
