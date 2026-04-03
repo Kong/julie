@@ -548,7 +548,7 @@
     <avro.version>1.11.4</avro.version>
     <aws.java.sdk.version>2.25.6</aws.java.sdk.version>
     <commons.version>1.11.0</commons.version>
-    <confluent-ce.version>7.6.0-ce</confluent-ce.version>
+    <confluent-ce.version>8.2.0-ce</confluent-ce.version>
     <confluent.version>7.6.0</confluent.version>
     <gcp.java.sdk.version>26.34.0</gcp.java.sdk.version>
     <hamcrest.version>2.2</hamcrest.version>
