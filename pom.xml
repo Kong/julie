@@ -551,7 +551,7 @@
     <confluent-ce.version>7.6.0-ce</confluent-ce.version>
     <confluent.version>7.6.0</confluent.version>
     <gcp.java.sdk.version>26.34.0</gcp.java.sdk.version>
-    <hamcrest.version>2.2</hamcrest.version>
+    <hamcrest.version>3.0</hamcrest.version>
     <jackson.version>2.19.0</jackson.version>
     <jedis.version>4.4.7</jedis.version>
     <jersey.version>3.1.5</jersey.version>
