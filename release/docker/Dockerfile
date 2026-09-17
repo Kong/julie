@@ -1,5 +1,6 @@
-FROM eclipse-temurin:17-jre
-LABEL maintainer="pere.urbon@gmail.com"
+ARG BASE_IMAGE_PREFIX=""
+FROM ${BASE_IMAGE_PREFIX}eclipse-temurin:17-jre
+LABEL maintainer="Kong Data Team"
 
 ENV container=docker
 ENV BUILDER_HOME=/usr/local/julie-ops
