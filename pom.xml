@@ -552,7 +552,7 @@
     <confluent.version>7.6.0</confluent.version>
     <gcp.java.sdk.version>26.34.0</gcp.java.sdk.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <jackson.version>2.19.0</jackson.version>
+    <jackson.version>2.21.4</jackson.version>
     <jedis.version>4.4.7</jedis.version>
     <jersey.version>3.1.5</jersey.version>
     <jinjava.version>2.7.6</jinjava.version>
@@ -566,6 +566,14 @@
     <testcontainers.version>1.19.7</testcontainers.version>
     <typesafe.version>1.4.3</typesafe.version>
     <zookeeper.version>3.9.1</zookeeper.version>
+    <!-- CVE remediation overrides for transitive deps pulled in via Confluent/GCP/vertx -->
+    <netty.version>4.1.138.Final</netty.version>
+    <protobuf.version>3.25.9</protobuf.version>
+    <jetty.version>9.4.58.v20250814</jetty.version>
+    <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
+    <jose4j.version>0.9.7</jose4j.version>
+    <lz4-java.version>1.8.1</lz4-java.version>
+    <scala-library.version>2.13.9</scala-library.version>
   </properties>
 
   <dependencies>
@@ -781,6 +789,59 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- CVE remediation: pin ahead of whatever the AWS/GCP BOMs below would otherwise select -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java-util</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-http</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-client</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-io</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>${nimbus-jose-jwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bitbucket.b_c</groupId>
+        <artifactId>jose4j</artifactId>
+        <version>${jose4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${lz4-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${scala-library.version}</version>
+      </dependency>
       <dependency>
         <groupId>software.amazon.awssdk</groupId>
         <artifactId>bom</artifactId>
