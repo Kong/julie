@@ -2,6 +2,11 @@ name: release a new topology builder docker image
 
 on:
   workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Override the release version (e.g. v1.2.3). Leave blank to auto-bump the patch version.'
+        required: false
+        type: string
 
 env:
   ECR_ACCOUNT_ID: "910202568813"
@@ -22,28 +27,43 @@ jobs:
 
       - name: Get latest tag and bump version
         id: bump
+        env:
+          VERSION_OVERRIDE: ${{ inputs.version_override }}
         run: |
-          # Get the latest tag that matches v*.*.* pattern
-          LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n 1)
-          
-          if [ -z "$LATEST_TAG" ]; then
-            # No tags found, start with v0.1.0
-            NEW_VERSION="v0.1.0"
-            echo "No existing tags found. Starting with $NEW_VERSION"
+          if [ -n "$VERSION_OVERRIDE" ]; then
+            if ! [[ "$VERSION_OVERRIDE" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::version_override '$VERSION_OVERRIDE' is not a valid vMAJOR.MINOR.PATCH version"
+              exit 1
+            fi
+            if git rev-parse "$VERSION_OVERRIDE" >/dev/null 2>&1; then
+              echo "::error::Tag $VERSION_OVERRIDE already exists"
+              exit 1
+            fi
+            NEW_VERSION="$VERSION_OVERRIDE"
+            echo "Using manually overridden version: $NEW_VERSION"
           else
-            echo "Latest tag: $LATEST_TAG"
-            # Remove 'v' prefix and split version
-            VERSION_NO_V="${LATEST_TAG#v}"
-            MAJOR=$(echo $VERSION_NO_V | cut -d. -f1)
-            MINOR=$(echo $VERSION_NO_V | cut -d. -f2)
-            PATCH=$(echo $VERSION_NO_V | cut -d. -f3)
-            
-            # Increment patch version
-            NEW_PATCH=$((PATCH + 1))
-            NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
-            echo "Bumping from $LATEST_TAG to $NEW_VERSION"
+            # Get the latest tag that matches v*.*.* pattern
+            LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n 1)
+
+            if [ -z "$LATEST_TAG" ]; then
+              # No tags found, start with v0.1.0
+              NEW_VERSION="v0.1.0"
+              echo "No existing tags found. Starting with $NEW_VERSION"
+            else
+              echo "Latest tag: $LATEST_TAG"
+              # Remove 'v' prefix and split version
+              VERSION_NO_V="${LATEST_TAG#v}"
+              MAJOR=$(echo $VERSION_NO_V | cut -d. -f1)
+              MINOR=$(echo $VERSION_NO_V | cut -d. -f2)
+              PATCH=$(echo $VERSION_NO_V | cut -d. -f3)
+
+              # Increment patch version
+              NEW_PATCH=$((PATCH + 1))
+              NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+              echo "Bumping from $LATEST_TAG to $NEW_VERSION"
+            fi
           fi
-          
+
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Next version will be: $NEW_VERSION"
 
@@ -93,9 +113,7 @@ jobs:
           push: true
           build-args: |
             BASE_IMAGE_PREFIX=910202568813.dkr.ecr.us-east-2.amazonaws.com/dockerhub/library/
-          tags: |
-            ${{ env.ECR_PROD_REGISTRY }}:${{ needs.determine-version.outputs.version }}
-            ${{ env.ECR_PROD_REGISTRY }}:latest
+          tags: ${{ env.ECR_PROD_REGISTRY }}:${{ needs.determine-version.outputs.version }}
 
       - name: Create Git tag
         run: |
